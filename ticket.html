@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TicketWydad — Stades, Matchs & Abonnements</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+  :root{
+    --red:#C8102E;--red-dark:#8B0000;--red-glow:rgba(200,16,46,.25);
+    --gold:#FFD700;--gold-dim:#B8860B;
+    --bg:#0e0e0e;--bg2:#141414;--bg3:#1c1c1c;
+    --border:#252525;--border2:#2e2e2e;
+    --muted:#707070;--muted2:#999;--white:#F0EDE8;
+    --green:#3aad5e;--blue:#1a6fd4;
+  }
+  html,body{background:var(--bg);color:var(--white);font-family:'Barlow',sans-serif;min-height:100vh;overflow-x:hidden}
+
+  /* ── NAV ── */
+  nav{
+    background:rgba(10,10,10,.97);border-bottom:2px solid var(--red);
+    padding:0 2.5rem;display:flex;align-items:center;
+    justify-content:space-between;height:60px;
+    position:sticky;top:0;z-index:100;backdrop-filter:blur(10px);
+  }
+  .logo{font-family:'Bebas Neue',sans-serif;font-size:26px;color:var(--red);letter-spacing:2px;display:flex;align-items:center;gap:8px;text-decoration:none}
+  .logo span{color:var(--white)}
+  .nav-links{display:flex;gap:2rem;align-items:center}
+  .nav-links a{color:var(--muted2);text-decoration:none;font-size:12px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;transition:color .2s;padding:4px 0;border-bottom:2px solid transparent}
+  .nav-links a:hover{color:var(--white);border-bottom-color:var(--red)}
+  .nav-links a.active{color:var(--white);border-bottom-color:var(--red)}
+  .nav-right{display:flex;align-items:center;gap:1rem}
+  .btn-nav{background:var(--red);color:white;border:none;padding:8px 20px;font-family:'Barlow',sans-serif;font-weight:700;font-size:12px;letter-spacing:1.5px;cursor:pointer;border-radius:3px;text-transform:uppercase;transition:background .2s}
+  .btn-nav:hover{background:var(--red-dark)}
+  .btn-nav-ghost{background:none;color:var(--muted2);border:1px solid var(--border2);padding:7px 18px;font-family:'Barlow',sans-serif;font-weight:600;font-size:12px;letter-spacing:1px;cursor:pointer;border-radius:3px;text-transform:uppercase;transition:all .2s}
+  .btn-nav-ghost:hover{color:var(--white);border-color:#555}
+
+  /* ── PAGE HEADER ── */
+  .page-hero{
+    background:#0a0a0a;
+    padding:3.5rem 2.5rem 2.5rem;
+    position:relative;overflow:hidden;
+    border-bottom:1px solid #1c0000;
+  }
+  .page-hero::before{
+    content:'';position:absolute;inset:0;
+    background:radial-gradient(ellipse at 20% 50%,rgba(200,16,46,.10) 0%,transparent 60%),
+               radial-gradient(ellipse at 80% 50%,rgba(200,16,46,.06) 0%,transparent 60%);
+    pointer-events:none;
+  }
+  .page-hero-inner{max-width:1100px;margin:0 auto;display:flex;align-items:flex-end;justify-content:space-between;gap:2rem;flex-wrap:wrap}
+  .page-hero-left{}
+  .page-breadcrumb{display:flex;align-items:center;gap:6px;margin-bottom:1rem;font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted)}
+  .page-breadcrumb a{color:var(--red);text-decoration:none}
+  .page-breadcrumb span{color:var(--muted)}
+  .page-title{font-family:'Bebas Neue',sans-serif;font-size:58px;letter-spacing:4px;line-height:1;color:var(--white);margin-bottom:.5rem}
+  .page-title em{color:var(--red);font-style:normal}
+  .page-desc{color:var(--muted2);font-size:14px;max-width:500px;line-height:1.6}
+  .page-tabs-bar{display:flex;gap:0;margin-top:2rem;border-bottom:1px solid var(--border2)}
+  .ptab{padding:12px 28px;font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;color:var(--muted);border-bottom:2px solid transparent;transition:all .2s;background:none;border-top:none;border-left:none;border-right:none;font-family:'Barlow',sans-serif}
+  .ptab:hover{color:var(--muted2)}
+  .ptab.active{color:var(--white);border-bottom-color:var(--red)}
+
+  /* ── CONTAINER ── */
+  .container{max-width:1100px;margin:0 auto;padding:0 2.5rem}
+
+  /* ── SECTION ── */
+  .section{padding:3rem 0}
+  .section-header{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:2rem;gap:1rem;flex-wrap:wrap}
+  .section-title{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:2px;color:var(--white);display:flex;align-items:center;gap:10px}
+  .section-title::before{content:'';display:block;width:4px;height:22px;background:var(--red);border-radius:2px;flex-shrink:0}
+  .section-desc{color:var(--muted);font-size:13px;max-width:420px;line-height:1.6}
+  .view-all{color:var(--red);font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;white-space:nowrap;transition:color .2s}
+  .view-all:hover{color:#e83050}
+
+  /* ── TAB CONTENT ── */
+  .tab-content{display:none}
+  .tab-content.active{display:block}
+
+  /* ─────────────────────────────────────────
+     STADES
+  ───────────────────────────────────────── */
+  .stades-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem}
+  .stade-card{background:var(--bg2);border:.5px solid var(--border);border-radius:10px;overflow:hidden;cursor:pointer;transition:border-color .3s,transform .2s;position:relative}
+  .stade-card:hover{border-color:var(--red);transform:translateY(-2px)}
+  .stade-card.main-stade{grid-column:span 2}
+  .stade-visual{position:relative;overflow:hidden}
+  .stade-svg-wrap{background:#0a0a0a;padding:2rem;display:flex;justify-content:center;align-items:center}
+  .stade-svg-wrap.tall{padding:1.5rem}
+  .stade-badge-overlay{position:absolute;top:1rem;left:1rem;display:flex;flex-direction:column;gap:6px}
+  .badge-city{background:rgba(0,0,0,.8);color:var(--muted2);font-size:10px;font-weight:700;letter-spacing:1.5px;padding:3px 10px;border-radius:2px;text-transform:uppercase;border:.5px solid var(--border2)}
+  .badge-cap{background:var(--red);color:white;font-size:10px;font-weight:700;letter-spacing:1px;padding:3px 10px;border-radius:2px;text-transform:uppercase}
+  .stade-info{padding:1.25rem 1.5rem}
+  .stade-name{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:2px;margin-bottom:.4rem}
+  .stade-meta{display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:1rem}
+  .stade-meta-item{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--muted);font-weight:600;letter-spacing:.5px}
+  .stade-meta-item i{font-size:13px;color:var(--red)}
+  .stade-zones-preview{display:flex;gap:6px;flex-wrap:wrap}
+  .zone-pill{font-size:10px;font-weight:600;letter-spacing:1px;padding:4px 10px;border-radius:2px;border:.5px solid var(--border2);color:var(--muted2);text-transform:uppercase}
+
+  /* Stadium SVG inside stade card */
+  .stad-svg-mini{width:100%;max-width:340px;display:block}
+
+  /* ─────────────────────────────────────────
+     ALL MATCHES
+  ───────────────────────────────────────── */
+  .matches-filter-bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:1.5rem}
+  .filter-chip{background:#1a1a1a;border:.5px solid var(--border2);color:var(--muted);font-size:11px;font-weight:700;letter-spacing:1px;padding:6px 14px;border-radius:2px;text-transform:uppercase;cursor:pointer;transition:all .2s}
+  .filter-chip:hover{color:var(--white);border-color:#555}
+  .filter-chip.on{background:#1a0000;border-color:var(--red);color:var(--white)}
+  .all-matches-list{display:flex;flex-direction:column;gap:1rem}
+  .match-row{background:var(--bg2);border:.5px solid var(--border);border-radius:8px;padding:1.25rem 1.5rem;cursor:pointer;transition:border-color .2s,background .2s;position:relative;overflow:hidden}
+  .match-row:hover{border-color:var(--red);background:#150a0a}
+  .match-row.hot::after{content:"🔥 CHOC";position:absolute;top:0;right:0;background:var(--red);color:white;font-size:9px;font-weight:700;letter-spacing:1.5px;padding:4px 12px;border-bottom-left-radius:6px}
+  .match-row-top{display:flex;align-items:center;gap:10px;margin-bottom:1rem}
+  .comp-tag{background:#1e1e1e;border:.5px solid var(--border2);color:var(--muted2);font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:3px 10px;border-radius:2px}
+  .match-date-tag{color:var(--muted);font-size:11px;font-weight:500}
+  .match-time-tag{color:var(--gold);font-size:11px;font-weight:700;margin-left:auto;display:flex;align-items:center;gap:4px}
+  .match-row-teams{display:flex;align-items:center;gap:0}
+  .mr-team{display:flex;align-items:center;gap:10px;flex:1}
+  .mr-team.r{flex-direction:row-reverse}
+  .mr-badge{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+  .mr-name{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:1px}
+  .mr-city{font-size:11px;color:var(--muted);margin-top:1px}
+  .mr-vs{text-align:center;width:90px;flex-shrink:0}
+  .mr-vs-text{font-family:'Bebas Neue',sans-serif;font-size:14px;color:#3a3a3a;letter-spacing:2px}
+  .mr-venue{font-size:10px;color:var(--muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .match-row-bottom{display:flex;align-items:center;justify-content:space-between;border-top:.5px solid var(--border);padding-top:1rem;margin-top:1rem}
+  .mr-price-from{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
+  .mr-price{font-size:18px;font-weight:700;color:var(--white)}
+  .mr-price span{font-size:11px;color:var(--muted);font-weight:400}
+  .mr-avail{font-size:11px;font-weight:600}
+  .avail-ok{color:var(--green)}
+  .avail-few{color:var(--gold)}
+  .avail-none{color:#444}
+  .btn-buy{background:var(--red);color:white;border:none;padding:9px 22px;font-family:'Barlow',sans-serif;font-weight:700;font-size:12px;letter-spacing:1px;text-transform:uppercase;cursor:pointer;border-radius:3px;transition:background .2s}
+  .btn-buy:hover{background:var(--red-dark)}
+  .calendar-view-toggle{display:flex;gap:0;background:#141414;border:.5px solid var(--border2);border-radius:4px;overflow:hidden;margin-left:auto}
+  .ctog{padding:7px 14px;font-size:11px;font-weight:600;letter-spacing:1px;cursor:pointer;color:var(--muted);transition:all .2s;border:none;background:none;font-family:'Barlow',sans-serif;text-transform:uppercase}
+  .ctog.on{background:var(--red);color:white}
+
+  /* Calendar month view */
+  .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;background:#141414;border:.5px solid var(--border);border-radius:8px;overflow:hidden;margin-top:.5rem}
+  .cal-head{background:#1c1c1c;padding:8px 4px;text-align:center;font-size:10px;font-weight:700;letter-spacing:1.5px;color:var(--muted);text-transform:uppercase}
+  .cal-day{background:#0e0e0e;padding:8px 4px;text-align:center;font-size:12px;color:#333;min-height:52px;position:relative;transition:background .2s}
+  .cal-day.cur-month{color:var(--muted2)}
+  .cal-day.has-match{background:#110505;border:.5px solid #2a0a0a;color:var(--white);cursor:pointer}
+  .cal-day.has-match:hover{background:#1a0808}
+  .cal-match-dot{width:6px;height:6px;border-radius:50%;background:var(--red);margin:3px auto 0}
+  .cal-day-num{font-size:11px;font-weight:600}
+
+  /* ─────────────────────────────────────────
+     ABONNEMENTS
+  ───────────────────────────────────────── */
+  .abo-hero{background:linear-gradient(135deg,#100000 0%,#0a0a0a 50%,#0d0000 100%);border:.5px solid #2a0a0a;border-radius:10px;padding:2.5rem;margin-bottom:2.5rem;position:relative;overflow:hidden}
+  .abo-hero::before{content:'';position:absolute;top:-60px;right:-60px;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(200,16,46,.12) 0%,transparent 70%);pointer-events:none}
+  .abo-hero-title{font-family:'Bebas Neue',sans-serif;font-size:38px;letter-spacing:3px;margin-bottom:.5rem}
+  .abo-hero-title em{color:var(--red);font-style:normal}
+  .abo-hero-desc{color:var(--muted2);font-size:14px;max-width:520px;line-height:1.7;margin-bottom:1.5rem}
+  .abo-perks{display:flex;gap:1.5rem;flex-wrap:wrap}
+  .abo-perk{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:600;color:var(--muted2)}
+  .abo-perk i{color:var(--green);font-size:16px}
+
+  .abo-plans{display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;margin-bottom:2rem}
+  .abo-card{background:var(--bg2);border:.5px solid var(--border);border-radius:10px;padding:1.75rem;position:relative;transition:border-color .3s,transform .2s;cursor:pointer}
+  .abo-card:hover{border-color:#444;transform:translateY(-2px)}
+  .abo-card.popular{border-color:var(--red);background:#0f0505}
+  .abo-card.popular::before{content:"⭐ POPULAIRE";position:absolute;top:-1px;left:50%;transform:translateX(-50%);background:var(--red);color:white;font-size:9px;font-weight:700;letter-spacing:2px;padding:4px 16px;border-radius:0 0 6px 6px}
+  .abo-tier{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:.75rem;padding-top:.25rem}
+  .abo-tier.gold-tier{color:var(--gold-dim)}
+  .abo-name{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:2px;margin-bottom:.5rem}
+  .abo-price-block{margin-bottom:1.25rem;padding-bottom:1.25rem;border-bottom:.5px solid var(--border)}
+  .abo-price{font-size:38px;font-weight:800;color:var(--white);line-height:1}
+  .abo-price span{font-size:14px;color:var(--muted);font-weight:400}
+  .abo-price-sub{font-size:11px;color:var(--muted);margin-top:4px}
+  .abo-old-price{font-size:13px;color:var(--muted);text-decoration:line-through;margin-top:2px}
+  .abo-features{list-style:none;display:flex;flex-direction:column;gap:8px;margin-bottom:1.5rem}
+  .abo-features li{display:flex;align-items:flex-start;gap:8px;font-size:13px;color:var(--muted2)}
+  .abo-features li i{color:var(--green);font-size:14px;flex-shrink:0;margin-top:1px}
+  .abo-features li.na{color:#3a3a3a}
+  .abo-features li.na i{color:#2a2a2a}
+  .btn-abo{width:100%;padding:12px;font-family:'Barlow',sans-serif;font-weight:700;font-size:13px;letter-spacing:1px;text-transform:uppercase;border-radius:4px;cursor:pointer;transition:all .2s;border:none}
+  .btn-abo-outline{background:none;color:var(--white);border:1px solid var(--border2)}
+  .btn-abo-outline:hover{border-color:#666;background:#1a1a1a}
+  .btn-abo-red{background:var(--red);color:white}
+  .btn-abo-red:hover{background:var(--red-dark)}
+  .btn-abo-gold{background:linear-gradient(135deg,var(--gold-dim),var(--gold));color:#111}
+  .btn-abo-gold:hover{opacity:.9}
+
+  /* Abo comparison table */
+  .abo-compare{background:var(--bg2);border:.5px solid var(--border);border-radius:10px;overflow:hidden}
+  .abo-compare-header{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;background:#141414;border-bottom:.5px solid var(--border)}
+  .abo-th{padding:1rem 1.25rem;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted)}
+  .abo-th.popular{color:var(--red)}
+  .abo-compare-row{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;border-bottom:.5px solid var(--border);transition:background .2s}
+  .abo-compare-row:last-child{border:none}
+  .abo-compare-row:hover{background:#141414}
+  .abo-td{padding:.85rem 1.25rem;font-size:12px;display:flex;align-items:center;gap:6px}
+  .abo-td.feature-name{color:var(--muted2);font-weight:500}
+  .abo-td.center{justify-content:center;color:var(--muted)}
+  .check{color:var(--green);font-size:15px}
+  .cross{color:#333;font-size:15px}
+  .abo-partial{font-size:11px;font-weight:600;color:var(--gold)}
+
+  /* FAQ */
+  .faq-list{margin-top:2.5rem;display:flex;flex-direction:column;gap:1px}
+  .faq-item{background:var(--bg2);border:.5px solid var(--border);overflow:hidden;transition:border-color .2s}
+  .faq-item:first-child{border-radius:8px 8px 0 0}
+  .faq-item:last-child{border-radius:0 0 8px 8px}
+  .faq-item:hover{border-color:#333}
+  .faq-q{display:flex;align-items:center;justify-content:space-between;padding:1.1rem 1.5rem;cursor:pointer;font-size:14px;font-weight:600}
+  .faq-icon{font-size:16px;color:var(--red);transition:transform .3s}
+  .faq-item.open .faq-icon{transform:rotate(45deg)}
+  .faq-a{display:none;padding:0 1.5rem 1.1rem;font-size:13px;color:var(--muted2);line-height:1.7}
+  .faq-item.open .faq-a{display:block}
+
+  /* ── DIVIDER ── */
+  .divider{border:none;border-top:.5px solid var(--border);margin:0}
+
+  /* ── FOOTER LINK ── */
+  .link-banner{background:#0a0a0a;border-top:.5px solid var(--border);border-bottom:.5px solid var(--border);padding:1rem 2.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem}
+  .link-banner-text{font-size:13px;color:var(--muted2)}
+  .link-banner-text a{color:var(--red);text-decoration:none;font-weight:700}
+  .link-banner-text a:hover{text-decoration:underline}
+
+  /* ── FOOTER ── */
+  footer{background:#070707;border-top:1px solid #1a1a1a;padding:2rem 2.5rem;text-align:center}
+  .footer-logo{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--red);letter-spacing:2px;margin-bottom:.5rem}
+  .footer-logo span{color:#444}
+  .footer-links{display:flex;justify-content:center;gap:2rem;flex-wrap:wrap;margin-bottom:1rem}
+  .footer-links a{font-size:11px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;text-decoration:none;transition:color .2s}
+  .footer-links a:hover{color:var(--white)}
+  .footer-copy{font-size:11px;color:#2a2a2a}
+
+  @media(max-width:768px){
+    .nav-links{display:none}
+    .stades-grid{grid-template-columns:1fr}
+    .stade-card.main-stade{grid-column:span 1}
+    .abo-plans{grid-template-columns:1fr}
+    .abo-compare{display:none}
+    .page-title{font-size:40px}
+    .container{padding:0 1rem}
+    nav{padding:0 1rem}
+    .link-banner{flex-direction:column;text-align:center}
+    .match-row-teams{flex-wrap:nowrap}
+    .mr-vs{width:60px}
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="logo" href="ticketwydad.html">⚽ <span>TICKET</span>WYDAD</a>
+  <div class="nav-links">
+    <a href="ticketwydad.html">Matchs</a>
+    <a class="active" href="#">Stades</a>
+    <a href="#" onclick="switchTab('abo');return false">Abonnements</a>
+  </div>
+  <div class="nav-right">
+    <button class="btn-nav-ghost">Connexion</button>
+    <button class="btn-nav">Mon Compte</button>
+  </div>
+</nav>
+
+<!-- PAGE HERO -->
+<div class="page-hero">
+  <div class="container">
+    <div class="page-hero-inner">
+      <div class="page-hero-left">
+        <div class="page-breadcrumb">
+          <a href="ticketwydad.html">Accueil</a>
+          <span>›</span>
+          <span id="breadcrumb-cur">Stades</span>
+        </div>
+        <div class="page-title">Explore <em>Tout</em><br>Sur Le Site</div>
+        <div class="page-desc">Stades, calendrier complet des matchs et abonnements saison — tout au même endroit.</div>
+        <div class="page-tabs-bar">
+          <button class="ptab active" onclick="switchTab('stades')">🏟 Stades</button>
+          <button class="ptab" onclick="switchTab('matches')">⚽ Matchs</button>
+          <button class="ptab" onclick="switchTab('abo')">🎫 Abonnements</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- LINK BACK BANNER -->
+<div class="link-banner">
+  <div class="link-banner-text">🔴 Prochains matchs Wydad disponibles sur <a href="ticketwydad.html">la page principale</a> — réservez maintenant !</div>
+  <button class="btn-buy" onclick="window.location='ticketwydad.html'">Voir les tickets →</button>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="container">
+
+  <!-- ══════ STADES TAB ══════ -->
+  <div class="tab-content active" id="tab-stades">
+    <div class="section">
+      <div class="section-header">
+        <div>
+          <div class="section-title">Stades Partenaires</div>
+          <div class="section-desc">3 stades iconiques du football marocain — retrouvez les plans et infos pratiques</div>
+        </div>
+        <div class="view-all">8 clubs partenaires →</div>
+      </div>
+
+      <div class="stades-grid">
+        <!-- Stade Mohammed V — main -->
+        <div class="stade-card main-stade">
+          <div class="stade-visual">
+            <div class="stade-svg-wrap" style="padding:2rem 3rem">
+              <svg viewBox="0 0 500 280" class="stad-svg-mini" xmlns="http://www.w3.org/2000/svg">
+                <rect width="500" height="280" fill="#0a0a0a"/>
+                <!-- outer ring glow -->
+                <ellipse cx="250" cy="140" rx="235" ry="130" fill="none" stroke="#C8102E" stroke-width="2" opacity=".4"/>
+                <!-- stands North VIP -->
+                <path d="M70 65 Q250 10 430 65 Q390 95 250 105 Q110 95 70 65Z" fill="#500010" stroke="#C8102E" stroke-width="1.5"/>
+                <text x="250" y="72" fill="#FFD700" font-size="11" font-family="Bebas Neue" letter-spacing="3" text-anchor="middle">TRIBUNE VIP · 300 DH</text>
+                <!-- stands South -->
+                <path d="M70 215 Q250 275 430 215 Q390 185 250 175 Q110 185 70 215Z" fill="#001030" stroke="#0066CC" stroke-width="1.5"/>
+                <text x="250" y="222" fill="#6699cc" font-size="11" font-family="Bebas Neue" letter-spacing="2" text-anchor="middle">TRIBUNE COUVERTE · 150 DH</text>
+                <!-- East -->
+                <path d="M430 65 Q490 100 490 140 Q490 180 430 215 Q400 185 388 140 Q400 95 430 65Z" fill="#0a2000" stroke="#336600" stroke-width="1.5"/>
+                <text x="462" y="136" fill="#66bb33" font-size="10" font-family="Bebas Neue" text-anchor="middle">EST</text>
+                <text x="462" y="149" fill="#446622" font-size="9" font-family="Barlow" text-anchor="middle">80 DH</text>
+                <!-- West -->
+                <path d="M70 65 Q10 100 10 140 Q10 180 70 215 Q100 185 112 140 Q100 95 70 65Z" fill="#0a2000" stroke="#336600" stroke-width="1.5"/>
+                <text x="38" y="136" fill="#66bb33" font-size="10" font-family="Bebas Neue" text-anchor="middle">OUEST</text>
+                <text x="38" y="149" fill="#446622" font-size="9" font-family="Barlow" text-anchor="middle">80 DH</text>
+                <!-- pitch -->
+                <ellipse cx="250" cy="140" rx="120" ry="68" fill="#1a4020" stroke="#2a6030" stroke-width="1"/>
+                <ellipse cx="250" cy="140" rx="100" ry="52" fill="none" stroke="#245030" stroke-width=".5" stroke-dasharray="4,4"/>
+                <line x1="250" y1="88" x2="250" y2="192" stroke="#245030" stroke-width=".5"/>
+                <circle cx="250" cy="140" r="20" fill="none" stroke="#245030" stroke-width=".5"/>
+                <circle cx="250" cy="140" r="2" fill="#245030"/>
+                <!-- goals -->
+                <rect x="150" y="133" width="2" height="14" fill="#245030"/>
+                <rect x="150" y="133" width="10" height="1" fill="#245030"/>
+                <rect x="159" y="133" width="2" height="14" fill="#245030"/>
+                <rect x="338" y="133" width="2" height="14" fill="#245030"/>
+                <rect x="338" y="133" width="10" height="1" fill="#245030"/>
+                <rect x="347" y="133" width="2" height="14" fill="#245030"/>
+                <!-- compass -->
+                <text x="250" y="18" fill="#333" font-size="10" font-family="Barlow" text-anchor="middle" font-weight="700">N</text>
+                <text x="250" y="272" fill="#333" font-size="10" font-family="Barlow" text-anchor="middle" font-weight="700">S</text>
+                <text x="493" y="143" fill="#333" font-size="10" font-family="Barlow" text-anchor="middle" font-weight="700">E</text>
+                <text x="8" y="143" fill="#333" font-size="10" font-family="Barlow" text-anchor="middle" font-weight="700">O</text>
+              </svg>
+            </div>
+            <div class="stade-badge-overlay">
+              <span class="badge-city">Casablanca</span>
+              <span class="badge-cap">45 000 places</span>
+            </div>
+          </div>
+          <div class="stade-info">
+            <div class="stade-name">Stade Mohammed V</div>
+            <div class="stade-meta">
+              <div class="stade-meta-item"><i class="ti ti-map-pin"></i> Casablanca</div>
+              <div class="stade-meta-item"><i class="ti ti-users"></i> 45 000 spectateurs</div>
+              <div class="stade-meta-item"><i class="ti ti-calendar"></i> 2 matchs à venir</div>
+              <div class="stade-meta-item"><i class="ti ti-parking"></i> Parking disponible</div>
+            </div>
+            <div class="stade-zones-preview">
+              <span class="zone-pill" style="border-color:#C8102E44;color:#C8102E">VIP · 300 DH</span>
+              <span class="zone-pill" style="border-color:#0066CC44;color:#0066CC">Couverte · 150 DH</span>
+              <span class="zone-pill">Virage Est · 80 DH</span>
+              <span class="zone-pill">Virage Ouest · 80 DH</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Complexe Moulay Abdellah -->
+        <div class="stade-card">
+          <div class="stade-visual">
+            <div class="stade-svg-wrap tall">
+              <svg viewBox="0 0 300 200" style="width:100%;max-width:260px" xmlns="http://www.w3.org/2000/svg">
+                <rect width="300" height="200" fill="#0a0a0a"/>
+                <ellipse cx="150" cy="100" rx="135" ry="88" fill="#141414" stroke="#1a6fd4" stroke-width="1.5" opacity=".7"/>
+                <path d="M40 50 Q150 12 260 50 Q230 70 150 78 Q70 70 40 50Z" fill="#002040" stroke="#1a6fd4" stroke-width="1.2"/>
+                <text x="150" y="54" fill="#5599cc" font-size="9" font-family="Bebas Neue" letter-spacing="2" text-anchor="middle">VIP · 200 DH</text>
+                <path d="M40 152 Q150 192 260 152 Q230 132 150 124 Q70 132 40 152Z" fill="#001830" stroke="#1a6fd4" stroke-width="1.2"/>
+                <text x="150" y="156" fill="#5599cc" font-size="9" font-family="Bebas Neue" letter-spacing="2" text-anchor="middle">COUVERTE · 100 DH</text>
+                <path d="M260 50 Q292 74 292 100 Q292 126 260 152 Q240 130 233 100 Q240 70 260 50Z" fill="#0a1800" stroke="#448822" stroke-width="1.2"/>
+                <path d="M40 50 Q8 74 8 100 Q8 126 40 152 Q60 130 67 100 Q60 70 40 50Z" fill="#0a1800" stroke="#448822" stroke-width="1.2"/>
+                <ellipse cx="150" cy="100" rx="72" ry="47" fill="#183820" stroke="#245030" stroke-width=".8"/>
+                <circle cx="150" cy="100" r="13" fill="none" stroke="#245030" stroke-width=".5"/>
+                <circle cx="150" cy="100" r="1.5" fill="#245030"/>
+                <line x1="150" y1="53" x2="150" y2="147" stroke="#245030" stroke-width=".4"/>
+              </svg>
+            </div>
+            <div class="stade-badge-overlay">
+              <span class="badge-city">Rabat</span>
+              <span class="badge-cap">52 000 places</span>
+            </div>
+          </div>
+          <div class="stade-info">
+            <div class="stade-name">Complexe Moulay Abdellah</div>
+            <div class="stade-meta">
+              <div class="stade-meta-item"><i class="ti ti-map-pin"></i> Rabat</div>
+              <div class="stade-meta-item"><i class="ti ti-users"></i> 52 000</div>
+              <div class="stade-meta-item"><i class="ti ti-calendar"></i> 1 match à venir</div>
+            </div>
+            <div class="stade-zones-preview">
+              <span class="zone-pill" style="border-color:#1a6fd444;color:#1a6fd4">VIP · 200 DH</span>
+              <span class="zone-pill">Couverte · 100 DH</span>
+              <span class="zone-pill">Virage · 50 DH</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Stade de Marrakech -->
+        <div class="stade-card">
+          <div class="stade-visual">
+            <div class="stade-svg-wrap tall">
+              <svg viewBox="0 0 300 200" style="width:100%;max-width:260px" xmlns="http://www.w3.org/2000/svg">
+                <rect width="300" height="200" fill="#0a0a0a"/>
+                <!-- rect stadium shape -->
+                <rect x="20" y="20" width="260" height="160" rx="40" fill="#141414" stroke="#8B4513" stroke-width="1.5" opacity=".7"/>
+                <rect x="35" y="35" width="230" height="130" rx="30" fill="none" stroke="#5a2800" stroke-width="1" stroke-dasharray="3,3"/>
+                <!-- north stand -->
+                <path d="M35 35 Q150 20 265 35 L265 65 Q150 55 35 65Z" fill="#2a0a00" stroke="#C8102E" stroke-width="1.2"/>
+                <text x="150" y="50" fill="#cc4422" font-size="9" font-family="Bebas Neue" letter-spacing="2" text-anchor="middle">VIP · 250 DH</text>
+                <!-- south stand -->
+                <path d="M35 165 Q150 180 265 165 L265 135 Q150 145 35 135Z" fill="#1a1000" stroke="#CC8800" stroke-width="1.2"/>
+                <text x="150" y="157" fill="#997722" font-size="9" font-family="Bebas Neue" letter-spacing="1" text-anchor="middle">COUVERTE · 120 DH</text>
+                <!-- east stand -->
+                <path d="M265 35 L280 50 L280 150 L265 165 L240 145 L240 55Z" fill="#0a1800" stroke="#448822" stroke-width="1.2"/>
+                <text x="265" y="102" fill="#66bb33" font-size="9" font-family="Bebas Neue" text-anchor="middle">EST</text>
+                <!-- west stand -->
+                <path d="M35 35 L20 50 L20 150 L35 165 L60 145 L60 55Z" fill="#0a1800" stroke="#448822" stroke-width="1.2"/>
+                <text x="35" y="102" fill="#66bb33" font-size="9" font-family="Bebas Neue" text-anchor="middle">O</text>
+                <!-- pitch -->
+                <rect x="70" y="62" width="160" height="76" rx="4" fill="#1a4020" stroke="#245030" stroke-width=".8"/>
+                <rect x="78" y="70" width="144" height="60" rx="2" fill="none" stroke="#245030" stroke-width=".4" stroke-dasharray="2,3"/>
+                <line x1="150" y1="62" x2="150" y2="138" stroke="#245030" stroke-width=".4"/>
+                <circle cx="150" cy="100" r="14" fill="none" stroke="#245030" stroke-width=".4"/>
+                <circle cx="150" cy="100" r="1.5" fill="#245030"/>
+                <!-- goals -->
+                <rect x="70" y="90" width="1.5" height="20" fill="#245030"/>
+                <rect x="70" y="90" width="8" height="1.5" fill="#245030"/>
+                <rect x="77" y="90" width="1.5" height="20" fill="#245030"/>
+                <rect x="221" y="90" width="1.5" height="20" fill="#245030"/>
+                <rect x="221" y="90" width="8" height="1.5" fill="#245030"/>
+                <rect x="228" y="90" width="1.5" height="20" fill="#245030"/>
+              </svg>
+            </div>
+            <div class="stade-badge-overlay">
+              <span class="badge-city">Marrakech</span>
+              <span class="badge-cap">45 240 places</span>
+            </div>
+          </div>
+          <div class="stade-info">
+            <div class="stade-name">Stade de Marrakech</div>
+            <div class="stade-meta">
+              <div class="stade-meta-item"><i class="ti ti-map-pin"></i> Marrakech</div>
+              <div class="stade-meta-item"><i class="ti ti-users"></i> 45 240</div>
+              <div class="stade-meta-item"><i class="ti ti-calendar"></i> 1 match à venir</div>
+            </div>
+            <div class="stade-zones-preview">
+              <span class="zone-pill" style="border-color:#8B000044;color:#cc4422">VIP · 250 DH</span>
+              <span class="zone-pill">Couverte · 120 DH</span>
+              <span class="zone-pill">Virage · 60 DH</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════ MATCHES TAB ══════ -->
+  <div class="tab-content" id="tab-matches">
+    <div class="section">
+      <div class="section-header">
+        <div>
+          <div class="section-title">Calendrier Complet</div>
+          <div class="section-desc">Tous les matchs disponibles à la billetterie — filtre par compétition ou stade</div>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center">
+          <div class="calendar-view-toggle">
+            <button class="ctog on" onclick="setCalView('list',this)">Liste</button>
+            <button class="ctog" onclick="setCalView('cal',this)">Calendrier</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="matches-filter-bar">
+        <div class="filter-chip on" onclick="filterMatches(this,'all')">Tous</div>
+        <div class="filter-chip" onclick="filterMatches(this,'botola')">Botola D1</div>
+        <div class="filter-chip" onclick="filterMatches(this,'coupe')">Coupe du Trône</div>
+        <div class="filter-chip" onclick="filterMatches(this,'wydan')">Matchs Wydad</div>
+        <div class="filter-chip" onclick="filterMatches(this,'casa')">Casablanca</div>
+      </div>
+
+      <!-- LIST VIEW -->
+      <div id="listView">
+        <div class="all-matches-list" id="allMatchList"></div>
+      </div>
+
+      <!-- CALENDAR VIEW -->
+      <div id="calView" style="display:none">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem">
+          <button onclick="changeMonth(-1)" style="background:none;border:.5px solid var(--border2);color:var(--muted2);padding:6px 14px;border-radius:3px;cursor:pointer;font-family:'Barlow',sans-serif;font-size:12px">← Préc.</button>
+          <span style="font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:2px" id="calMonthLabel">MAI 2026</span>
+          <button onclick="changeMonth(1)" style="background:none;border:.5px solid var(--border2);color:var(--muted2);padding:6px 14px;border-radius:3px;cursor:pointer;font-family:'Barlow',sans-serif;font-size:12px">Suiv. →</button>
+        </div>
+        <div class="cal-grid" id="calGridWrap"></div>
+        <div id="calMatchDetail" style="margin-top:1rem"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════ ABONNEMENTS TAB ══════ -->
+  <div class="tab-content" id="tab-abo">
+    <div class="section">
+
+      <div class="abo-hero">
+        <div class="abo-hero-title">Abonnement <em>Saison</em><br>2025 / 26</div>
+        <div class="abo-hero-desc">Sois présent à chaque match — abonnement annuel avec accès prioritaire, remises exclusives et avantages membres Wydad.</div>
+        <div class="abo-perks">
+          <div class="abo-perk"><i class="ti ti-check"></i> Accès prioritaire aux billets</div>
+          <div class="abo-perk"><i class="ti ti-check"></i> Remise jusqu'à 35%</div>
+          <div class="abo-perk"><i class="ti ti-check"></i> Badge membre numérique</div>
+          <div class="abo-perk"><i class="ti ti-check"></i> Newsletter exclusive</div>
+        </div>
+      </div>
+
+      <div class="abo-plans">
+
+        <!-- Supporter -->
+        <div class="abo-card">
+          <div class="abo-tier">TIER 1</div>
+          <div class="abo-name">Supporter</div>
+          <div class="abo-price-block">
+            <div class="abo-price">990 <span>DH / saison</span></div>
+            <div class="abo-old-price">1 400 DH (valeur réelle)</div>
+            <div class="abo-price-sub">≈ 57 DH par match · 17 matchs inclus</div>
+          </div>
+          <ul class="abo-features">
+            <li><i class="ti ti-check"></i> Virage (Nord ou Sud)</li>
+            <li><i class="ti ti-check"></i> 17 matchs Botola inclus</li>
+            <li><i class="ti ti-check"></i> Badge numérique membre</li>
+            <li><i class="ti ti-check"></i> Newsletter exclusive</li>
+            <li class="na"><i class="ti ti-x"></i> Tribune Couverte</li>
+            <li class="na"><i class="ti ti-x"></i> Accès lounge</li>
+            <li class="na"><i class="ti ti-x"></i> Réductions boutique</li>
+          </ul>
+          <button class="btn-abo btn-abo-outline">Choisir Supporter</button>
+        </div>
+
+        <!-- Fidèle — Popular -->
+        <div class="abo-card popular">
+          <div class="abo-tier">TIER 2</div>
+          <div class="abo-name">Fidèle Rouge</div>
+          <div class="abo-price-block">
+            <div class="abo-price" style="color:var(--red)">1 890 <span>DH / saison</span></div>
+            <div class="abo-old-price">2 550 DH (valeur réelle)</div>
+            <div class="abo-price-sub">≈ 111 DH par match · tous matchs inclus</div>
+          </div>
+          <ul class="abo-features">
+            <li><i class="ti ti-check"></i> Tribune Couverte (siège fixe)</li>
+            <li><i class="ti ti-check"></i> Tous matchs Botola + Coupe</li>
+            <li><i class="ti ti-check"></i> Badge numérique rouge</li>
+            <li><i class="ti ti-check"></i> -10% boutique officielle</li>
+            <li><i class="ti ti-check"></i> Newsletter + avant-match</li>
+            <li class="na"><i class="ti ti-x"></i> Accès lounge VIP</li>
+            <li class="na"><i class="ti ti-x"></i> Parking réservé</li>
+          </ul>
+          <button class="btn-abo btn-abo-red">Choisir Fidèle Rouge</button>
+        </div>
+
+        <!-- Elite VIP -->
+        <div class="abo-card">
+          <div class="abo-tier gold-tier">⭐ ELITE</div>
+          <div class="abo-name">VIP Wydad Elite</div>
+          <div class="abo-price-block">
+            <div class="abo-price" style="color:var(--gold-dim)">3 900 <span>DH / saison</span></div>
+            <div class="abo-old-price">5 100 DH (valeur réelle)</div>
+            <div class="abo-price-sub">≈ 230 DH par match · expérience complète</div>
+          </div>
+          <ul class="abo-features">
+            <li><i class="ti ti-check"></i> Tribune VIP (siège premium)</li>
+            <li><i class="ti ti-check"></i> Tous matchs toutes compétitions</li>
+            <li><i class="ti ti-check"></i> Accès Lounge VIP + hospitalité</li>
+            <li><i class="ti ti-check"></i> Parking réservé + entrée dédiée</li>
+            <li><i class="ti ti-check"></i> -20% boutique officielle</li>
+            <li><i class="ti ti-check"></i> Programme officiel offert</li>
+            <li><i class="ti ti-check"></i> Rencontres joueurs (x2 / saison)</li>
+          </ul>
+          <button class="btn-abo btn-abo-gold">Choisir VIP Elite</button>
+        </div>
+
+      </div>
+
+      <!-- Comparison table -->
+      <div class="abo-compare">
+        <div class="abo-compare-header">
+          <div class="abo-th">Avantage</div>
+          <div class="abo-th">Supporter</div>
+          <div class="abo-th popular">Fidèle Rouge</div>
+          <div class="abo-th">VIP Elite</div>
+        </div>
+        <div class="abo-compare-row">
+          <div class="abo-td feature-name"><i class="ti ti-armchair" style="color:var(--muted);font-size:14px"></i> Zone incluse</div>
+          <div class="abo-td center"><span style="font-size:11px">Virage</span></div>
+          <div class="abo-td center"><span style="font-size:11px">Couverte</span></div>
+          <div class="abo-td center"><span style="font-size:11px;color:var(--gold)">VIP</span></div>
+        </div>
+        <div class="abo-compare-row">
+          <div class="abo-td feature-name"><i class="ti ti-calendar-event" style="color:var(--muted);font-size:14px"></i> Matchs inclus</div>
+          <div class="abo-td center"><span style="font-size:11px">17 Botola</span></div>
+          <div class="abo-td center"><span style="font-size:11px">Botola + Coupe</span></div>
+          <div class="abo-td center"><span style="font-size:11px;color:var(--gold)">Toutes compétitions</span></div>
+        </div>
+        <div class="abo-compare-row">
+          <div class="abo-td feature-name"><i class="ti ti-discount" style="color:var(--muted);font-size:14px"></i> Remise boutique</div>
+          <div class="abo-td center"><i class="ti ti-x cross"></i></div>
+          <div class="abo-td center"><span class="abo-partial">-10%</span></div>
+          <div class="abo-td center"><span class="abo-partial" style="color:var(--gold)">-20%</span></div>
+        </div>
+        <div class="abo-compare-row">
+          <div class="abo-td feature-name"><i class="ti ti-building" style="color:var(--muted);font-size:14px"></i> Accès Lounge VIP</div>
+          <div class="abo-td center"><i class="ti ti-x cross"></i></div>
+          <div class="abo-td center"><i class="ti ti-x cross"></i></div>
+          <div class="abo-td center"><i class="ti ti-check check"></i></div>
+        </div>
+        <div class="abo-compare-row">
+          <div class="abo-td feature-name"><i class="ti ti-car" style="color:var(--muted);font-size:14px"></i> Parking réservé</div>
+          <div class="abo-td center"><i class="ti ti-x cross"></i></div>
+          <div class="abo-td center"><i class="ti ti-x cross"></i></div>
+          <div class="abo-td center"><i class="ti ti-check check"></i></div>
+        </div>
+        <div class="abo-compare-row">
+          <div class="abo-td feature-name"><i class="ti ti-users" style="color:var(--muted);font-size:14px"></i> Rencontre joueurs</div>
+          <div class="abo-td center"><i class="ti ti-x cross"></i></div>
+          <div class="abo-td center"><i class="ti ti-x cross"></i></div>
+          <div class="abo-td center"><span class="abo-partial" style="color:var(--gold)">2× / saison</span></div>
+        </div>
+        <div class="abo-compare-row">
+          <div class="abo-td feature-name"><i class="ti ti-news" style="color:var(--muted);font-size:14px"></i> Newsletter + avant-match</div>
+          <div class="abo-td center"><i class="ti ti-check check"></i></div>
+          <div class="abo-td center"><i class="ti ti-check check"></i></div>
+          <div class="abo-td center"><i class="ti ti-check check"></i></div>
+        </div>
+      </div>
+
+      <!-- FAQ -->
+      <div class="faq-list" style="margin-top:2.5rem">
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:2px;margin-bottom:1rem;display:flex;align-items:center;gap:10px"><span style="display:block;width:4px;height:22px;background:var(--red);border-radius:2px"></span>Questions fréquentes</div>
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">
+            <span>Puis-je choisir mon siège exact ?</span>
+            <i class="ti ti-plus faq-icon"></i>
+          </div>
+          <div class="faq-a">Oui — pour les abonnements Fidèle Rouge et VIP Elite, tu choisis ton siège lors de la souscription. Les abonnés Supporter bénéficient de l'accès au virage avec placement libre.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">
+            <span>L'abonnement est-il remboursable ?</span>
+            <i class="ti ti-plus faq-icon"></i>
+          </div>
+          <div class="faq-a">L'abonnement peut être remboursé dans les 14 jours suivant l'achat si aucun match n'a encore eu lieu. Passé ce délai, aucun remboursement n'est possible sauf cas exceptionnel.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">
+            <span>L'abonnement est-il transférable ?</span>
+            <i class="ti ti-plus faq-icon"></i>
+          </div>
+          <div class="faq-a">Non, l'abonnement est strictement personnel et nominatif. Il est lié à ta carte d'identité. Toute revente est interdite et entraîne l'annulation sans remboursement.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">
+            <span>Quels matchs sont inclus dans l'abonnement ?</span>
+            <i class="ti ti-plus faq-icon"></i>
+          </div>
+          <div class="faq-a">L'abonnement Supporter couvre les 17 matchs à domicile de la Botola D1. Le Fidèle Rouge ajoute les matchs de Coupe du Trône à domicile. Le VIP Elite inclut toutes les compétitions, y compris les matchs africains.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">
+            <span>Comment recevoir mon abonnement ?</span>
+            <i class="ti ti-plus faq-icon"></i>
+          </div>
+          <div class="faq-a">Ton abonnement est 100% numérique. Tu recevras un QR code unique par email après validation du paiement. Présente-le à l'entrée du stade avant chaque match.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div><!-- /container -->
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">⚽ <span>TICKET</span>WYDAD</div>
+  <div class="footer-links">
+    <a href="ticketwydad.html">Matchs</a>
+    <a href="#">Stades</a>
+    <a href="#">Abonnements</a>
+    <a href="#">Contact</a>
+    <a href="#">CGU</a>
+    <a href="#">Confidentialité</a>
+  </div>
+  <div class="footer-copy">© 2026 TicketWydad · Tous droits réservés · Paiement sécurisé SSL</div>
+</footer>
+
+<script>
+/* ══ ALL MATCHES DATA ══ */
+const allMatches = [
+  {id:1,comp:"Botola Pro D1",compKey:"botola",date:"Sam 17 Mai 2026",time:"20:00",
+   home:{name:"WYDAD",city:"Casablanca",color:"#C8102E",bg:"#C8102E22",emoji:"🔴"},
+   away:{name:"RAJA",city:"Casablanca",color:"#2E8B57",bg:"#2E8B5722",emoji:"🟢"},
+   venue:"Stade Mohammed V",minPrice:80,totalAvail:600,hot:true,hasWydad:true,isCasa:true,day:17},
+  {id:2,comp:"Coupe du Trône",compKey:"coupe",date:"Mer 21 Mai 2026",time:"18:30",
+   home:{name:"FAR",city:"Rabat",color:"#1565C0",bg:"#1565C022",emoji:"🔵"},
+   away:{name:"MAS",city:"Fès",color:"#FF6F00",bg:"#FF6F0022",emoji:"🟠"},
+   venue:"Complexe Moulay Abdellah",minPrice:50,totalAvail:1060,hot:false,hasWydad:false,isCasa:false,day:21},
+  {id:3,comp:"Botola Pro D1",compKey:"botola",date:"Dim 25 Mai 2026",time:"19:00",
+   home:{name:"KAWKAB",city:"Marrakech",color:"#8B0000",bg:"#8B000022",emoji:"🔴"},
+   away:{name:"WYDAD",city:"Casablanca",color:"#C8102E",bg:"#C8102E22",emoji:"🔴"},
+   venue:"Stade de Marrakech",minPrice:60,totalAvail:1110,hot:false,hasWydad:true,isCasa:false,day:25},
+  {id:4,comp:"Botola Pro D1",compKey:"botola",date:"Sam 31 Mai 2026",time:"20:30",
+   home:{name:"WYDAD",city:"Casablanca",color:"#C8102E",bg:"#C8102E22",emoji:"🔴"},
+   away:{name:"HASSANIA",city:"Agadir",color:"#FF8C00",bg:"#FF8C0022",emoji:"🟡"},
+   venue:"Stade Mohammed V",minPrice:80,totalAvail:850,hot:false,hasWydad:true,isCasa:true,day:31},
+  {id:5,comp:"Botola Pro D1",compKey:"botola",date:"Dim 8 Juin 2026",time:"18:00",
+   home:{name:"MAT",city:"Tétouan",color:"#006400",bg:"#00640022",emoji:"🟩"},
+   away:{name:"RAJA",city:"Casablanca",color:"#2E8B57",bg:"#2E8B5722",emoji:"🟢"},
+   venue:"Stade Saniat R'mel",minPrice:50,totalAvail:2100,hot:false,hasWydad:false,isCasa:false,day:8},
+  {id:6,comp:"Coupe du Trône",compKey:"coupe",date:"Sam 14 Juin 2026",time:"20:00",
+   home:{name:"WYDAD",city:"Casablanca",color:"#C8102E",bg:"#C8102E22",emoji:"🔴"},
+   away:{name:"FAR",city:"Rabat",color:"#1565C0",bg:"#1565C022",emoji:"🔵"},
+   venue:"Stade Mohammed V",minPrice:100,totalAvail:300,hot:true,hasWydad:true,isCasa:true,day:14},
+];
+
+let currentFilter = 'all';
+let calView = 'list';
+let calMonth = 4; // May = index 4 (0-based)
+const months = ["Janv","Févr","Mars","Avr","Mai","Juin","Juil","Août","Sep","Oct","Nov","Déc"];
+const fullMonths = ["Janvier","Février","Mars","Avril","Mai","Juin","Juillet","Août","Septembre","Octobre","Novembre","Décembre"];
+
+function getAvailBadge(n){
+  if(n===0) return '<span class="mr-avail avail-none">Complet</span>';
+  if(n<100) return '<span class="mr-avail avail-few">⚠ '+n+' restantes</span>';
+  return '<span class="mr-avail avail-ok">✔ Disponible</span>';
+}
+
+function renderAllMatches(filter){
+  const list = document.getElementById('allMatchList');
+  let filtered = allMatches;
+  if(filter==='botola') filtered = allMatches.filter(m=>m.compKey==='botola');
+  else if(filter==='coupe') filtered = allMatches.filter(m=>m.compKey==='coupe');
+  else if(filter==='wydan') filtered = allMatches.filter(m=>m.hasWydad);
+  else if(filter==='casa') filtered = allMatches.filter(m=>m.isCasa);
+  list.innerHTML = filtered.map(m=>`
+    <div class="match-row ${m.hot?'hot':''}">
+      <div class="match-row-top">
+        <span class="comp-tag">${m.comp}</span>
+        <span class="match-date-tag">${m.date}</span>
+        <span class="match-time-tag"><i class="ti ti-clock" style="font-size:12px"></i>${m.time}</span>
+      </div>
+      <div class="match-row-teams">
+        <div class="mr-team">
+          <div class="mr-badge" style="background:${m.home.bg};color:${m.home.color}">${m.home.emoji}</div>
+          <div><div class="mr-name">${m.home.name}</div><div class="mr-city">${m.home.city}</div></div>
+        </div>
+        <div class="mr-vs">
+          <div class="mr-vs-text">VS</div>
+          <div class="mr-venue">${m.venue}</div>
+        </div>
+        <div class="mr-team r">
+          <div class="mr-badge" style="background:${m.away.bg};color:${m.away.color}">${m.away.emoji}</div>
+          <div style="text-align:right"><div class="mr-name">${m.away.name}</div><div class="mr-city">${m.away.city}</div></div>
+        </div>
+      </div>
+      <div class="match-row-bottom">
+        <div>
+          <div class="mr-price-from">À partir de</div>
+          <div class="mr-price">${m.minPrice} <span>DH</span></div>
+        </div>
+        ${getAvailBadge(m.totalAvail)}
+        <button class="btn-buy" onclick="window.location='ticketwydad.html'">Acheter →</button>
+      </div>
+    </div>`).join('');
+}
+
+function filterMatches(el, key){
+  document.querySelectorAll('.filter-chip').forEach(c=>c.classList.remove('on'));
+  el.classList.add('on');
+  currentFilter = key;
+  renderAllMatches(key);
+}
+
+function setCalView(type, btn){
+  calView = type;
+  document.querySelectorAll('.ctog').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  document.getElementById('listView').style.display = type==='list' ? 'block' : 'none';
+  document.getElementById('calView').style.display = type==='cal' ? 'block' : 'none';
+  if(type==='cal') renderCal();
+}
+
+function changeMonth(d){
+  calMonth = Math.max(0,Math.min(11,calMonth+d));
+  renderCal();
+}
+
+function renderCal(){
+  const label = document.getElementById('calMonthLabel');
+  label.textContent = fullMonths[calMonth].toUpperCase()+' 2026';
+  const grid = document.getElementById('calGridWrap');
+  const days = ['Lun','Mar','Mer','Jeu','Ven','Sam','Dim'];
+  // first day of month (2026)
+  const firstDay = new Date(2026, calMonth, 1).getDay(); // 0=Sun
+  const adjusted = (firstDay + 6) % 7; // Mon=0
+  const daysInMonth = new Date(2026, calMonth+1, 0).getDate();
+  const matchDays = allMatches.filter(m=>{
+    // map month by index
+    const mMonthMap = {4:4,4:4};
+    return true; // show all for demo, highlight by day
+  }).map(m=>({day:m.day, label:`${m.home.name} vs ${m.away.name}`}));
+
+  let html = days.map(d=>`<div class="cal-head">${d}</div>`).join('');
+  for(let i=0;i<adjusted;i++) html += '<div class="cal-day"></div>';
+  for(let d=1;d<=daysInMonth;d++){
+    const matchesOnDay = calMonth===4 ? allMatches.filter(m=>m.day===d && m.day<=31) 
+                        : calMonth===5 ? allMatches.filter(m=>m.day===d && [8,14].includes(m.day))
+                        : [];
+    const hasMatch = matchesOnDay.length > 0;
+    html += `<div class="cal-day cur-month ${hasMatch?'has-match':''}" ${hasMatch?`onclick="showCalMatch(${matchesOnDay[0].id})"`:''}>
+      <div class="cal-day-num">${d}</div>
+      ${hasMatch?'<div class="cal-match-dot"></div>':''}
+    </div>`;
+  }
+  grid.innerHTML = html;
+}
+
+function showCalMatch(id){
+  const m = allMatches.find(x=>x.id===id);
+  if(!m) return;
+  document.getElementById('calMatchDetail').innerHTML = `
+    <div class="match-row" style="border-color:var(--red)">
+      <div class="match-row-top">
+        <span class="comp-tag">${m.comp}</span>
+        <span class="match-date-tag">${m.date}</span>
+        <span class="match-time-tag">${m.time}</span>
+      </div>
+      <div class="match-row-teams">
+        <div class="mr-team">
+          <div class="mr-badge" style="background:${m.home.bg};color:${m.home.color}">${m.home.emoji}</div>
+          <div><div class="mr-name">${m.home.name}</div><div class="mr-city">${m.home.city}</div></div>
+        </div>
+        <div class="mr-vs"><div class="mr-vs-text">VS</div><div class="mr-venue">${m.venue}</div></div>
+        <div class="mr-team r">
+          <div class="mr-badge" style="background:${m.away.bg};color:${m.away.color}">${m.away.emoji}</div>
+          <div style="text-align:right"><div class="mr-name">${m.away.name}</div><div class="mr-city">${m.away.city}</div></div>
+        </div>
+      </div>
+      <div class="match-row-bottom">
+        <div><div class="mr-price-from">À partir de</div><div class="mr-price">${m.minPrice} <span>DH</span></div></div>
+        ${getAvailBadge(m.totalAvail)}
+        <button class="btn-buy" onclick="window.location='ticketwydad.html'">Acheter →</button>
+      </div>
+    </div>`;
+}
+
+/* ══ TAB SWITCHING ══ */
+function switchTab(tab){
+  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.ptab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('tab-'+tab).classList.add('active');
+  document.querySelectorAll('.ptab').forEach(t=>{
+    if(t.textContent.toLowerCase().includes(
+      tab==='stades'?'stades':tab==='matches'?'match':'abonn'
+    )) t.classList.add('active');
+  });
+  const bc = document.getElementById('breadcrumb-cur');
+  if(bc) bc.textContent = tab==='stades'?'Stades':tab==='matches'?'Matchs':'Abonnements';
+  // init matches list
+  if(tab==='matches') renderAllMatches(currentFilter);
+  if(tab==='matches' && calView==='cal') renderCal();
+}
+
+/* ══ FAQ ══ */
+function toggleFaq(el){
+  const item = el.parentElement;
+  item.classList.toggle('open');
+}
+
+/* ══ INIT ══ */
+renderAllMatches('all');
+</script>
+</body>
+</html>
